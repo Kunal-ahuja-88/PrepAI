@@ -1,0 +1,1 @@
+A NextJS AI website for interview prepartion according to specifc role and experience using Google Gemini API and Postgres using Drizzle Orm for backend . Also integrated Stripe payment method for upgrading to pro features
