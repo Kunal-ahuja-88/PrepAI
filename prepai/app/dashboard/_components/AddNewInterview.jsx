@@ -13,6 +13,11 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { chatSession } from '@/utils/GeminiAIModel';
 import { LoaderCircle } from 'lucide-react';
+import { MockInterview } from '@/utils/schema';
+import { db } from '@/utils/db';
+import { v4 as uuidv4 } from 'uuid';
+import { useUser } from '@clerk/nextjs';
+import moment from 'moment';
 
 function AddNewInterview() {
     const [openDialog, setOpenDialog] = useState(false);
@@ -20,6 +25,9 @@ function AddNewInterview() {
     const [jobDesc, setJobDesc] = useState('');
     const [jobExperience, setJobExperience] = useState('');
     const [loading,setLoading]=useState(false)
+    const [jsonResponse,setJsonResponse]=useState([]);
+
+    const {user} = useUser();
 
     const onSubmit = async (e) => {
         setLoading(true)
@@ -30,8 +38,31 @@ function AddNewInterview() {
           const result = await chatSession.sendMessage(InputPrompt);
           const rawResponse = await result.response.text();
           
-          const jsonResponse = rawResponse.replace(/```json\n|\n```/g, '');
-          console.log(JSON.parse(jsonResponse))
+          const mockJsonResponse = rawResponse.replace(/```json\n|\n```/g, '');
+          console.log(mockJsonResponse)
+
+          setJsonResponse(mockJsonResponse)
+          
+          if(mockJsonResponse) {
+            const resp = await db.insert(MockInterview)
+            .values({
+            mockId:uuidv4(),
+            jsonMockRespnse:mockJsonResponse,
+            jobPositon:jobPosition,
+            jobDesc:jobDesc,
+            jobExperience:jobExperience,
+            createdBy:user?.primaryEmailAddress?.emailAddress,
+            createdAt:moment().format('DD-MM-yyyy')
+            }).returning({mockId:MockInterview.mockId})
+  
+            console.log("Inserted ID",resp)
+            
+          }
+
+          else {
+            console.log("ERROR")
+          }
+          
           setLoading(false);
   }
 
@@ -86,7 +117,7 @@ function AddNewInterview() {
                                     <Button type="submit" disabled={loading}>
                                     {loading?
                                     <>
-                                    <LoaderCircle className='animate-spin' />'Generating your response'
+                                    <LoaderCircle className='animate-spin' />Generating your response
                                     </> : 'Start Interview'
                                     }
                                    </Button>
