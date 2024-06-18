@@ -5,7 +5,7 @@ import { Volume2 } from 'lucide-react';
 
 function QuestionsSection({ mockInterviewQuestion, activeQuestionIndex }) {
 
-  
+  // user can listen the question
   const textToSpeech = (text) => {
     if('speechSynthesis' in window) {
       const speech = new SpeechSynthesisUtterance(text)
