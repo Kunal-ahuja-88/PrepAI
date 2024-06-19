@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 "use client"
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -37,6 +44,12 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex , intervi
     });
   }, [results]);
 
+  useEffect(() => {
+    if (!isRecording && userAnswer.length > 10) {
+      UpdateUserAnswerInDb();
+    }
+  }, [userAnswer, isRecording]);
+
   console.log({
     error,
     interimResult,
@@ -46,48 +59,48 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex , intervi
     stopSpeechToText,
   });
 
-  const saveUserAnswer = async() => {
+  const startStopRecording = async() => {
     if (isRecording) {
-      setLoading(true)
       stopSpeechToText(); 
-
-      if (userAnswer.length < 10) {
-        setLoading(false)
-        toast('Error while recording your answer, please record again');
-        return;
-      }
-
-      const feedbackPrompt = `Question: ${mockInterviewQuestion[activeQuestionIndex]?.question}, User Answer: ${userAnswer}. Based on the question and user answer for the given interview questions, please provide a rating and feedback in JSON format with a rating field and feedback field in just 3-5 lines.`;
-
-      const result = await chatSession.sendMessage(feedbackPrompt);
-
-      const rawResponse = await result.response.text();
-      const mockJsonResponse = rawResponse.replace(/```json\n|\n```/g, '');
-      console.log(mockJsonResponse);
-      const jsonFeedbackResp = JSON.parse(mockJsonResponse);
-
-      const resp = await db.insert(UserAnswer)
-      .values({
-        mockIdRef:interviewData?.mockId,
-        question:mockInterviewQuestion[activeQuestionIndex]?.question,
-        correctAns:mockInterviewQuestion[activeQuestionIndex]?.answer,
-        userAns:userAnswer,
-        feedback:jsonFeedbackResp?.feedback,
-        rating:jsonFeedbackResp?.rating,
-        userEmail:user?.primaryEmailAddress?.emailAddress,
-        createdAt:moment().format('DD-MM-yyyy')
-      })
-      if(resp) {
-       toast('User answer recorded successfully')
-      }
-      setLoading(false)
+     
     } 
-    
+
     else {
-      startSpeechToText(); // Call the function
+      startSpeechToText(); 
     }
   };
+   
+  const UpdateUserAnswerInDb = async() => {
+      
+    console.log(userAnswer)
+    setLoading(true)
+    const feedbackPrompt = `Question: ${mockInterviewQuestion[activeQuestionIndex]?.question}, User Answer: ${userAnswer}. Based on the question and user answer for the given interview questions, please provide a rating and feedback in JSON format with a rating field and feedback field in just 3-5 lines.`;
 
+    const result = await chatSession.sendMessage(feedbackPrompt);
+
+    const rawResponse = await result.response.text();
+    const mockJsonResponse = rawResponse.replace(/```json\n|\n```/g, '');
+    console.log(mockJsonResponse);
+    const jsonFeedbackResp = JSON.parse(mockJsonResponse);
+
+    const resp = await db.insert(UserAnswer)
+    .values({
+      mockIdRef:interviewData?.mockId,
+      question:mockInterviewQuestion[activeQuestionIndex]?.question,
+      correctAns:mockInterviewQuestion[activeQuestionIndex]?.answer,
+      userAns:userAnswer,
+      feedback:jsonFeedbackResp?.feedback,
+      rating:jsonFeedbackResp?.rating,
+      userEmail:user?.primaryEmailAddress?.emailAddress,
+      createdAt:moment().format('DD-MM-yyyy')
+    })
+    if(resp) {
+     toast('User answer recorded successfully')
+    }
+    setUserAnswer('')
+    setLoading(false)
+
+  }
   return (
     <div className='flex items-center justify-center flex-col'>
       <div className='flex flex-col mt-20 justify-center items-center bg-black rounded-lg p-5'>
@@ -104,7 +117,7 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex , intervi
       <Button 
       disabled={loading}
       variant="outline" className='my-10' 
-      onClick={saveUserAnswer}>
+      onClick={startStopRecording}>
 
         {isRecording ? 
           <h2 className='text-red-600 animate-pulse flex gap-2 items-center'>
@@ -116,7 +129,6 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex , intervi
           </h2>}
 
       </Button>
-      <Button onClick={() => console.log(userAnswer)}>Show user answer</Button>
     </div>
   );
 }
