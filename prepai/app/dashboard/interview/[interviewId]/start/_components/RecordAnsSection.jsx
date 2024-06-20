@@ -1,10 +1,4 @@
 
-
-
-
-
-
-
 "use client"
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -20,10 +14,10 @@ import moment from 'moment';
 import { useUser } from '@clerk/nextjs';
 
 
-function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex , interviewData }) {
+function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex, interviewData }) {
   const [userAnswer, setUserAnswer] = useState('');
-  const {user} = useUser();
-  const [loading,setLoading] = useState()
+  const { user } = useUser();
+  const [loading, setLoading] = useState()
 
   const {
     error,
@@ -59,19 +53,19 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex , intervi
     stopSpeechToText,
   });
 
-  const startStopRecording = async() => {
+  const startStopRecording = async () => {
     if (isRecording) {
-      stopSpeechToText(); 
-     
-    } 
+      stopSpeechToText();
+
+    }
 
     else {
-      startSpeechToText(); 
+      startSpeechToText();
     }
   };
-   
-  const UpdateUserAnswerInDb = async() => {
-      
+
+  const UpdateUserAnswerInDb = async () => {
+
     console.log(userAnswer)
     setLoading(true)
     const feedbackPrompt = `Question: ${mockInterviewQuestion[activeQuestionIndex]?.question}, User Answer: ${userAnswer}. Based on the question and user answer for the given interview questions, please provide a rating and feedback in JSON format with a rating field and feedback field in just 3-5 lines.`;
@@ -84,18 +78,18 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex , intervi
     const jsonFeedbackResp = JSON.parse(mockJsonResponse);
 
     const resp = await db.insert(UserAnswer)
-    .values({
-      mockIdRef:interviewData?.mockId,
-      question:mockInterviewQuestion[activeQuestionIndex]?.question,
-      correctAns:mockInterviewQuestion[activeQuestionIndex]?.answer,
-      userAns:userAnswer,
-      feedback:jsonFeedbackResp?.feedback,
-      rating:jsonFeedbackResp?.rating,
-      userEmail:user?.primaryEmailAddress?.emailAddress,
-      createdAt:moment().format('DD-MM-yyyy')
-    })
-    if(resp) {
-     toast('User answer recorded successfully')
+      .values({
+        mockIdRef: interviewData?.mockId,
+        question: mockInterviewQuestion[activeQuestionIndex]?.question,
+        correctAns: mockInterviewQuestion[activeQuestionIndex]?.answer,
+        userAns: userAnswer,
+        feedback: jsonFeedbackResp?.feedback,
+        rating: jsonFeedbackResp?.rating,
+        userEmail: user?.primaryEmailAddress?.emailAddress,
+        createdAt: moment().format('DD-MM-yyyy')
+      })
+    if (resp) {
+      toast('User answer recorded successfully')
     }
     setUserAnswer('')
     setLoading(false)
@@ -114,17 +108,17 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex , intervi
           }}
         />
       </div>
-      <Button 
-      disabled={loading}
-      variant="outline" className='my-10' 
-      onClick={startStopRecording}>
+      <Button
+        disabled={loading}
+        variant="outline" className='my-10'
+        onClick={startStopRecording}>
 
-        {isRecording ? 
+        {isRecording ?
           <h2 className='text-red-600 animate-pulse flex gap-2 items-center'>
             <StopCircle /> Stop Recording
           </h2>
-         : 
-         <h2 className='text-primary animate-pulse flex gap-2 items-center'>
+          :
+          <h2 className='text-primary animate-pulse flex gap-2 items-center'>
             <Mic /> Record Answer
           </h2>}
 
