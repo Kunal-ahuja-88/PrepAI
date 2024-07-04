@@ -15,7 +15,7 @@ const onFeedbackPress = () => {
 }
 
   return (
-    <div className='border shadow-sm rounded-lg p-3'>
+    <div className='border shadow-sm rounded-lg p-3 '>
     <h2 className='font-bold text-primary'>
     {interview.jobPositon}
     </h2>

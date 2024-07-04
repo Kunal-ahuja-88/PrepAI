@@ -1,4 +1,3 @@
-
 import { Lightbulb } from 'lucide-react';
 import React from 'react';
 import { Volume2 } from 'lucide-react';
@@ -40,5 +39,3 @@ function QuestionsSection({ mockInterviewQuestion, activeQuestionIndex }) {
 }
 
 export default QuestionsSection;
-
-

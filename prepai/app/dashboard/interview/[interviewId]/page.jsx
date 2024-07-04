@@ -90,14 +90,3 @@ function Interview({ params }) {
 }
 
 export default Interview
-
-
-
-
-
-
-
-
-
-
-
