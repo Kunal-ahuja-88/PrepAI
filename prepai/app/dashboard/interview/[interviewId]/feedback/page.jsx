@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState , useRef } from 'react'
 import { db } from '@/utils/db'
 import { eq } from 'drizzle-orm'
 import { UserAnswer } from '@/utils/schema'
@@ -11,8 +11,36 @@ import {
 import { ChevronsUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
+import { Download } from 'lucide-react';
+import html2canvas from "html2canvas"
+import jsPDF from "jspdf"
+
 
 function Feedback({ params }) {
+
+    const pdfRef = useRef();
+   
+
+    const downloadPdf  = () => {
+        const input = pdfRef.current;
+        html2canvas(input).then((canvas) => {
+            const imagData = canvas.toDataURL('image/png')
+            const pdf = new jsPDF('p','mm','a4',true)
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const imgWidth = canvas.width;
+            const imgHeight = canvas.height;
+            const ratio = Math.min(pdfWidth/imgWidth,pdfHeight/imgHeight)
+            const imgX = (pdfWidth-imgWidth*ratio)/2;
+            const imgY = 30;
+            pdf.addImage(imagData,'PNG',imgX,imgY,imgWidth*ratio,imgHeight*ratio)
+            pdf.save("feedback.pdf")
+          
+        })
+    }
+   
+
+
     const [feedbackList, setFeedbackList] = useState([])
     const [totalRating, setTotalRating] = useState(0)
     const totalQuestions = 10
@@ -30,22 +58,13 @@ function Feedback({ params }) {
 
         console.log(result)
         setFeedbackList(result)
-        calculateTotalRating(result)
+      
     }
-    const calculateTotalRating = (feedbackList) => {
-        if (feedbackList.length > 0) {
-            const sumOfRatings = feedbackList.reduce((acc, item) => acc + item.rating, 0)
-            const totalRating = (sumOfRatings / totalQuestions) * 10
-            setTotalRating(totalRating)
-        }
-        else {
-            setTotalRating(0)
-        }
-    }
-    
+   
 
     return (
-        <div className='p-10'>
+        <>
+        <div className='p-10' ref={pdfRef}>
             {
                 feedbackList.length == 0 ?
                     <h2 className='font-bold text-xl text-gray-500'>No interview record feedback found</h2>
@@ -53,7 +72,6 @@ function Feedback({ params }) {
                     <>
                         <h2 className='text-3xl font-bold text-green-500'>Congratulations !</h2>
                         <h2 className='font-bold text-2xl'>Here is your interview feedback</h2>
-                        <h2 className='text-primary text-lg my-3'>Your overall rating :<strong>{totalRating.toFixed(2)}/100</strong></h2>
 
                         <h2 className='text-sm text-gray-500'>Find below your answer, possible answers and feedback for improvement</h2>
                         {feedbackList && feedbackList.map((item, index) => (
@@ -73,9 +91,17 @@ function Feedback({ params }) {
                         ))}
                     </>
             }
-
-            <Button onClick={() => router.replace('/dashboard')}>Go Home</Button>
+           
         </div>
+
+          <div className="flex items-center space-x-4">
+                    <Button className="text-primary bg-white border border-primary hover:bg-primary hover:text-white px-4 py-2 my-3" onClick={() => router.replace('/dashboard')}>Go Home</Button>
+                    <Button onClick={downloadPdf} className="text-red-500 bg-white border border-red-500 hover:bg-red-500 hover:text-white px-4 py-2">
+                        <Download /> Download 
+                    </Button>
+                </div>
+                </>
+           
     )
 }
 
