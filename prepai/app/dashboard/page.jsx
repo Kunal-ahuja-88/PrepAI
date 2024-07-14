@@ -15,6 +15,7 @@ function Dashboard() {
 
   const {user} = useUser();
   const [credit,setCredit] = useState();
+  const [percentage,setPercentage]=useState(0);
 
   useEffect(()=> {
       user && GetInterviewList()
@@ -30,6 +31,8 @@ function Dashboard() {
       
       setCredit(result)
       console.log(result)
+      const perc = (result.length/50)*100;
+      setPercentage(perc)
   }
   
   
@@ -41,8 +44,13 @@ function Dashboard() {
     <div className='flex justify-between items-center'>
     <h2 className='font-bold text-3xl text-primary'>Dashboard</h2>
    
-   <Progress />
-    <h2 className='text-red-600 text-0.5xl my-2'>Credits used : {credit?.length} / 50 </h2>
+     <div className='flex flex-col justify-between items center'>
+   <h2 className='text-red-600 font-semibold text-0.5xl my-2'>Credits used : {credit?.length} / 50 </h2>
+    <Progress value={percentage}
+          className="relative w-full h-2 bg-gray-200"
+            />
+    </div>
+
     </div>
  
     <h2 className='text-gray-500'>Create your AI Mock Interview </h2>
