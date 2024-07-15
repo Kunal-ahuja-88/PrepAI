@@ -8,6 +8,7 @@ import QuestionsSection from './_components/QuestionsSection';
 import RecordAnsSection from './_components/RecordAnsSection';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import StopWatch from './_components/stopWatch';
 
 function StartInterview({ params }) {
     const [interviewData, setInterviewData] = useState(null);
@@ -52,14 +53,18 @@ function StartInterview({ params }) {
         <QuestionsSection mockInterviewQuestion={mockInterviewQuestion}
           activeQuestionIndex={activeQuestionIndex}
         />
-
-
-        {/*Video , audio recording */}
+         
+           {/* Stopwatch */}
+           {/*Video , audio recording */}
+                <div className='flex flex-col md:col-span-1'>
+                <StopWatch  />
+                  
          <RecordAnsSection
             mockInterviewQuestion={mockInterviewQuestion}
             activeQuestionIndex={activeQuestionIndex}
             interviewData={interviewData}
          />
+                </div>       
         </div>
         <div className='flex justify-end gap-6'> 
          {activeQuestionIndex>0 &&
