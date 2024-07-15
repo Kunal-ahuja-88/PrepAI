@@ -22,9 +22,9 @@ function SideNav() {
         },
         {
             id: 3,
-            name: 'How does it work',
+            name: 'Schedule Interview',
             icon: ReceiptText,
-            path: '/dashboard/how'
+            path: '/dashboard/schedule'
         },
       
       

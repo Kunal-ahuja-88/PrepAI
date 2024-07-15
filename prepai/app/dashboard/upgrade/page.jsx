@@ -2,6 +2,8 @@
 import PricingPlan from '@/app/_data/PricingPlan'
 import React from 'react'
 import { useUser } from '@clerk/nextjs'
+import { Mail , CircleHelp , Users ,Infinity } from 'lucide-react';
+
 
 function page() {
  
@@ -13,8 +15,8 @@ function page() {
   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:items-center md:gap-8">
     
       {PricingPlan.map((item,index)=> (
-        <div key={index} className="rounded-2xl border border-gray-200 p-6 shadow-sm sm:px-8 lg:p-12">
-      <div className="text-center">
+        <div key={index} className="rounded-2xl border border-primary p-6 shadow-sm sm:px-8 lg:p-12">
+      <div className="text-center ml-1">
         <h2 className="text-lg font-medium text-gray-900">
           {item.duration}
           <span className="sr-only">Plan</span>
@@ -27,8 +29,9 @@ function page() {
         </p>
       </div>
 
-      <ul className="mt-6 space-y-2">
+      <ul className="mt-6 space-y-3">
         <li className="flex items-center gap-1">
+        {/*
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -39,11 +42,34 @@ function page() {
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
           </svg>
-
-          <span className="text-gray-700"> Unlimited Interviews Access </span>
+             */
+        }
+          <Infinity />
+          <span className="text-gray-700"> Interviews Access </span>
         </li>
 
         <li className="flex items-center gap-1">
+        {/*
+         <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="size-5 text-indigo-700"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+          </svg>
+        */}
+         
+          <Users />
+          <span className="text-gray-700"> Connection with Experts </span>
+        </li>
+          
+          
+            
+ <li className="flex items-center gap-1">
+ {/*
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -54,12 +80,17 @@ function page() {
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
           </svg>
-
-          <span className="text-gray-700"> Detailed PDF Analysis </span>
+             */
+          }
+       
+          
+          <Mail />
+          <span className="text-gray-700">Email support </span>
         </li>
 
         <li className="flex items-center gap-1">
-          <svg
+         {/*
+         <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -69,22 +100,8 @@ function page() {
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
           </svg>
-
-          <span className="text-gray-700"> Email support </span>
-        </li>
-
-        <li className="flex items-center gap-1">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="size-5 text-indigo-700"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-          </svg>
-
+        */}
+           <CircleHelp />
           <span className="text-gray-700"> Help center access </span>
         </li>
       </ul>
