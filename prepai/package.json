@@ -9,7 +9,7 @@
     "lint": "next lint",
     "db-push": "npx drizzle-kit push",
     "db-studio": "npx drizzle-kit studio",
-    "vercel-build": "npm install && next build"
+    "vercel-build": "next build"
   },
   "dependencies": {
     "@clerk/nextjs": "^5.1.4",
